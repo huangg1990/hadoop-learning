@@ -42,5 +42,22 @@
 3. 分布工模式
 
 
+## HDFS
+1. 格式化
+    为什么不能一直格式化NameNode,格式化NameNode要注意什么?
+    格式化NameNode会产生新的集群ID,导致NameNode和DataNode的集群ID不一致,集群找不到已往数据.所惟格式化NameNode时,一定要先删除DATA数据
+    和LOG日志,然后再格式化NameNode
+![!\[Alt text\](image.png)](imgs/DataNode-NameNode.png)
+
+2. 基本操作
+    1)创建目录
+    bin/hdfs dfs -mkdir -p /user/huangg/input
+    2) 列出目录
+    bin/hdfs dfs -ls /
+    bin/hdfs dfs -lsr /
+    3) 文件上传
+    bin/hdfs dfs -put wcinput/wc.input /user/huangg/input
+    http://192.168.0.220:50070/explorer.html#/user/huangg/output
+
 
 
