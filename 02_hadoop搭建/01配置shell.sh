@@ -1,4 +1,4 @@
-#bin/bash
+#!/bin/bash
 
 # 永久修改主机名
 hostnamectl set-hostname hadoop1

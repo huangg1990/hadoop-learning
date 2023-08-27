@@ -76,6 +76,85 @@
     这4个配制文件存放在 etc/hadoop/目录下,用户可以根据项目需求重新进行修改配制
 
 
+# 完全分布式运行模式(开发重点)
+1. 准备3台机器(关闭防火墙,静态IP,主机名称)
+2. 安装JDK
+3. 配置环境变量
+4. 安装Hadoop
+5. 配置环境变量
+6. 配置集群
+7. 单点启动
+8. 配置ssh
+9. 群起并测试集群
+
+## 集群搭建配置
+1. 使用命令
+scp 命令 全量拷贝
+2rsync -rvl source/dir user@host:/dir
+主要用户同步 使用 ,只更新有变更的文件
+
+2. 集群部署规划
+Hadoop221 NameNode,DataNode,NodeManager
+Hadoop222 DataNode,ResourceManager,Nodemanager
+hadoop223 SecondaryNameNode,DataNode,NodeManager
+
+3. 配置集群
+    1) 核心配制文件 core-site.xml
+    <configuration>
+        <!-- 指定HDFS中NameNode -->
+        <property>
+            <name>fs.defaultFS</name>
+            <value>hdfs://Hadoop221:9000</value>
+        </property>
+        <!-- 运行时产生文件的存储目录 -->
+        <property>
+            <name>hadoop.tmp.dir</name>
+            <value>/opt/module/hadoop-2.10.2/data/tmp</value>
+        </property>
+    </configuration>
+
+    2) HDFS配制文件
+    hadoop-env.sh 配制JAVA_HOME export JAVA_HOME=/opt/module/jdk1.8.0_381
+    配制hdfs-site.xml
+    <configuration>
+        <!-- 指定HDFS中副本数量 -->
+        <property>
+            <name>dfs.replication</name>
+            <value>3</value>
+        </property>
+        <!-- 指定Hadoop辅助名称节点主机配置 -->
+        <property>
+            <name>dfs.namenode.secondary.http-address</name>
+            <value>hadoop223:50090</value>
+        </property>
+    </configuration>
+
+    3) Yarn配置文件
+    yarn-env.sh配置JAVA_HOME export JAVA_HOME=/opt/module/jdk1.8.0_381
+    配置yarn-site.xml
+    <configuration>
+        <!-- Reducer 获取数据的方式 -->
+        <property>
+            <name>yarn.nodemanager.aux-services</name>
+            <value>mapreduce_shuffle</value>
+        </property>
+        <!-- 指定YARN的ResourceManager的地址 -->
+        <property>
+            <name>yarn.nodemanager.hostname</name>
+            <value>Hadoop222</value>
+        </property>
+    </configuration>
+4. 使用 xsync脚本 同步到每台服务器
+
+
+格式化 hdfs 
+[hadoop@hadoop221 tmp]$ hdfs namenode -format
+
+
+
+
+
+
 
 
 
