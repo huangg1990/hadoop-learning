@@ -59,5 +59,24 @@
     bin/hdfs dfs -put wcinput/wc.input /user/huangg/input
     http://192.168.0.220:50070/explorer.html#/user/huangg/output
 
+## 配制文件说明
+默认配制文件和自定义配制文件,只有用户想修改某一默认配置时,才需要修改自定义配制文件,更改相应属性值
+1. 默认配制文件
+    要获取的默认文件    默认存放在Hadoop的jar包中的位置
+    core-default.xml    hadoop-common-xxx.jar/core-default.xml
+    hdfs-default.xml    hadoop-hdfs-xxx.jar/hdfs-default.xml
+    yarn-default.xml    hadoop-yarn-common-xxx.jar/yarn-default.xml
+    mapred-default.xml  hadoop-mapreduce-client-core-xxx.jar/mapred-default.xml
+
+2. 自定义配置文件
+    core-site.xml
+    hdfs-site.xml
+    yarn-site.xml
+    mapred-site.xml 
+    这4个配制文件存放在 etc/hadoop/目录下,用户可以根据项目需求重新进行修改配制
+
+
+
+
 
 
