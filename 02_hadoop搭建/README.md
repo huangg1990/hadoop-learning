@@ -144,11 +144,77 @@ hadoop223 SecondaryNameNode,DataNode,NodeManager
             <value>Hadoop222</value>
         </property>
     </configuration>
-4. 使用 xsync脚本 同步到每台服务器
 
+    -- 使用这个 上面的启动不了
+    <configuration>
+        <property>
+            <name>yarn.nodemanager.aux-services</name>
+            <value>mapreduce_shuffle</value>
+        </property>
+        <property>
+            <name>yarn.resourcemanager.address</name>
+            <value>hadoop222:8032</value>
+        </property>
+        <property>
+            <name>yarn.resourcemanager.scheduler.address</name>
+            <value>hadoop222:8030</value>
+        </property>
+        <property>
+            <name>yarn.resourcemanager.resource-tracker.address</name>
+            <value>hadoop222:8031</value>
+        </property>
+    </configuration>
+
+
+
+
+4. 使用 xsync脚本 同步到每台服务器
 
 格式化 hdfs 
 [hadoop@hadoop221 tmp]$ hdfs namenode -format
+
+
+5. SSH免密登录
+![!\[Alt text\](image.png)](imgs/SSH.png)
+生成 ssh-keygen -t rsa
+文件说明
+known_hosts 记录ssh访问过计算机的公钥(public eky)
+id_rsa生成的私钥
+id_rsa.pub生成的公钥
+authorized_keys 存放授权过的无密码登录服务器公钥
+
+
+拷贝密钥
+ssh-copy-id hadoop221
+ssh-copy-id hadoop222
+ssh-copy-id hadoop223
+
+6. 群启集群
+   1) 配制etc/hadoop/slaves (注意该文件中结尾不允许有空格,文件中不允许有空行)
+    hadoop221
+    hadoop222
+    hadoop223
+    同步 xsync slaves
+   2) 注意由于配制如下 
+    Hadoop221 NameNode,DataNode,NodeManager
+    Hadoop222 DataNode,ResourceManager,Nodemanager
+    hadoop223 SecondaryNameNode,DataNode,NodeManager
+    在启动hdfs时需要在 221上启动 sbin/start-dfs.sh
+    在启动yarn时需要在 222上启动 (因为ResourceManager 在222上)
+
+    3) ## 基本测试
+    hdfs dfs -put wcinput/wc.input /
+    hdfs dfs -put /opt/software/hadoop.xxx.gz
+
+    4) 启动总结
+    分别启动hadoop-daemon.sh star/stop namenode/datanode
+    分别启动yarn yarn-daemon.sh start/stop resourcemanager/nodemanager
+    各模块启动(常用)
+    sbin/start-dfs.sh 
+    sbin/start-yarn.sh
+7. 集群时间同步
+
+
 
 
 
