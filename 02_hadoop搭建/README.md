@@ -212,9 +212,39 @@ ssh-copy-id hadoop223
     各模块启动(常用)
     sbin/start-dfs.sh 
     sbin/start-yarn.sh
+
+    注意:NameNode和ResourceManager如果不是同一台机器,不能在NameNode上启动YARN,应该在RemorceManager所在的机器上启动YARN
+
 7. 集群时间同步
+    1) 安装ntp
+    2) 修改ntp配置文件
+        授权 网段上的所有机器可以从这台机器上查询和同步时间
+        集群在局域网中,不使用其他互联网上的时间
+        当该节点丢失网络链接,依然可以采用本地时间作为时间服务器为集群提供时间同步
+        [root@hadoop221 ~]# vim /etc/ntp.conf
+        restrict 192.168.0.0 mask 255.255.255.0 nomodify notrap
+        # server 0.centos.pool.ntp.org iburst
+        # server 1.centos.pool.ntp.org iburst
+        # server 2.centos.pool.ntp.org iburst
+        # server 3.centos.pool.ntp.org iburst
+        server 127.127.0.1
+        fudge 127.127.1.0 stratum 10
 
 
+
+
+    3) 修改/etc/sysconfig/ntpd文件 (让硬件时间与系统时间一起同步)
+        [root@hadoop221 ~]# vim /etc/sysconfig/ntpd
+        SYNC_HWCLOCK=yes
+    4) 重新启动ntpd服务 
+        [root@hadoop221 ~]# systemctl restart ntpd
+        [root@hadoop221 ~]# systemctl status ntpd
+    5) 设置ntpd服务开机启动
+        [root@hadoop221 ~]# systemctl enable ntpd
+        
+        [root@hadoop222 ~]# crontab -e 
+        no crontab for root - using an empty one
+        */1 * * * * /usr/sbin/ntpdate hadoop221
 
 
 
