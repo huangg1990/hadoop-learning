@@ -53,7 +53,15 @@ Tips:
 
 # HDFS 的Shell操作
 1. 基本语法
+    bib/hadoop fs 具体命令 OR bin/hdfs dfs 具体命令
+    命令大全 bib/hadoop fs
+    hadoop fs -help
+    帮助命令 [root@hadoop221 ~]# hadoop fs -help rm
+    列出文件 [root@hadoop221 ~]# hadoop fs -ls /    
+    列出文件 [root@hadoop221 ~]# hadoop fs -lrs / 
+    创建目录 hadoop fs -mkdir -p /huangg/huangg
+    从本地剪切粘贴到HDFS hadoop fs -moveFromLocal xx.txt /huangg/huagg/ # 地址会删除
+    追加一个文件到已经存在的文件末尾 hadoop fs -appendToFile xx1.txt /huangg/huangg/xx.txt
+    
 
-
-
-
+ 
