@@ -41,4 +41,19 @@
         辅助NameNode,分担其工作量,比如定期合并Fsimage和Edits,并推送级NameNode
         在紧急情况下,可辅助恢复NameNode
     
+# HDFS 文件块大小
+HDFS的文件在物理上是分块存储的(Block),块的大小可以通过配置参数(dfs.blocksize)来规定,默认大小在Hadoop 2.x版本中是128MB,老版本是64MB 
+![Alt text](imgs/hdfs-%E5%9D%97%E5%A4%A7%E5%B0%8F.png)
+HDFS块的大小是由硬盘的 读取速度决定,如果 是SSD 可以设置为256MB 如果是 Raid 可以更高
+Tips:
+    1) HDFS的块设置太小,会增加寻址时间,程序一直在找块的开始位置
+    2) 如果块设置的太大,从磁盘传输数据的时间会明显大于定位这个块开始位置所需要的时间,导致程序在处理这块数据时会非常慢.
+总之:HDFS块的大小设置主要取决于硬盘传输速率
+
+
+# HDFS 的Shell操作
+1. 基本语法
+
+
+
 
