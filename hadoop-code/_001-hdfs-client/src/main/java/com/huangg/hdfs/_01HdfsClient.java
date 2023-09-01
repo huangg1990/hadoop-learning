@@ -12,7 +12,7 @@ import java.net.URI;
  * HDFS 操作demo
  *
  */
-public class HdfsClient {
+public class _01HdfsClient {
     public static void main(String[] args) throws Exception {
         // 这个很重要 不然没有权限
 //        System.setProperty("HADOOP_USER_NAME","hadoop");
