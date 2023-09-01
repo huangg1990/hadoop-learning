@@ -62,6 +62,56 @@ Tips:
     创建目录 hadoop fs -mkdir -p /huangg/huangg
     从本地剪切粘贴到HDFS hadoop fs -moveFromLocal xx.txt /huangg/huagg/ # 地址会删除
     追加一个文件到已经存在的文件末尾 hadoop fs -appendToFile xx1.txt /huangg/huangg/xx.txt
-    
+    查看文件内容
+    hadoop fs -cat /huangg/huagg/test.txt
+
+    修改文件所有者权限[-chgrp  -chmod  -chown]
+    hadoop fs -chgrp huangg /huangg/t1.txt
+
+    从本地文件系统中拷贝文件到HDFS
+    hadoop fs -copyFromLocal local.txt /huangg/huangg/t2.txt
+
+    从HDFS中拷贝文件到本地文件系统
+    Hadoop fs -copyToLocal /huangg/huangg/t2.txt local.txt
+
+    从HDFS中拷贝文件到HDFS的其它位置
+    hadoop fs -cp /huangg/huangg/t2.txt /huangg/liu/t2.txt
+
+    从HDFS中剪切文件到HDFS的其它位置
+    hadoop fs -mv /huangg/huangg/t2.txt /huangg/liu/t2.txt
+
+
+    从HDFS中下载文件到本地文件系统
+    Hadoop fs -get /huangg/huangg/t2.txt local.txt
+
+
+    从HDFS中合并下载文件到本地文件系统
+    Hadoop fs -getmerge /huangg/huangg/* merge.txt
+
+
+    从本地文件系统上传文件到HDFS
+    Hadoop fs -put local.txt /huangg/huangg/t2.txt
+
+    显示文件的末尾
+    Hadoop fs -tail /huangg/huangg/t2.txt
+
+
+    删除文件或文件夹
+    Hadoop fs -rm /huangg/huangg/t2.txt
+    Hadoop fs -rm -R /huangg/huangg/t2.txt
+
+
+    删除空目录
+    Hadoop fs -rmdir /huangg/huangg
+
+    统计文件夹大小信息
+    Hadoop fs -du -h -s /huangg/huangg
+2. 设置HDFS中文件的副本数量
+    hadoop fs -setrep 3 /huangg/huangg/t2.txt
+    设置的副本只是记录在NameNode的元数据中,是否真的会有这么多副本,需要看DataNode的数量,因为目录只有3个DataNode最多也只会存储3份,当再增加DataNode后会自动拷贝一份副本在新的节点 直接满足副本的数量为止.
+
+3. HDFS客户端操作
+
+
 
  
