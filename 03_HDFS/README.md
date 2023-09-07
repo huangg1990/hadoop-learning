@@ -178,7 +178,17 @@ Tips:
     4. 如果SecondaryNameNode不和NameNode在一个主机节点上，需要将SecondaryNameNode存储数据的目录拷贝到NameNode存储数据的平级目录，并删除in_use.lock文件
     5. 导入检查点数据（等一会儿ctrl + c 结束掉）
     6. 启动NameNode
-    
+
+# 集群安全模式
+1. NameNode启动，先装镜像文件Fsimage载入内存，并执行编辑日志Edits中的各项操作，一旦在内存中成功建立文件系统元数据的映像时，则创建一个新的Fsimage文件和一个空的编辑日志。此时NameNode开始监听DataNode请求。这个过程期间，NameNode一真运行在安全模式，即NameNode的文件系统对于客户端来说是只读的。
+2. DataNode启动 系统中rover块的位置并不是由NameNode维护的，而是以块列表的形式存储在DataNode中，在xitogn的正常操作期间，NameNode会在内存中保留所有位置的映射信息。在安全模式下，各个DataNode会向NameNode发送最新的块列表信息，NameNode了解到足够多的块位置信息这后，即可高效运行文件系统。
+3. 安全模式的退出判断
+    如果满足最小副本条件，NameNode会在30秒钟这后就退出安全模式。在整个系统中99%的块满足最小副本值（默认1）
+    在启动一个刚刚格式化的HDFS集群时，因为系统中还没有任何块，所以NameNode不会进入安全模式
+
+
+
+
 
 
 
