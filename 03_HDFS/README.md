@@ -137,6 +137,58 @@ Tips:
 4. HDFS的读取数据流程
 ![](imgs/HDFS文件读取流程.png)
 
+5. NameNode和SecondaryNameNode
+   NameNode数据存储位置：
+   在磁盘中备份元数据FsImage
+    Edits文件（只进行追加操作，效率很高），每当元数据有更新或添加元数据时，修改内存中的元数据并追加到Edits中
+    Edits文件 过大，效率降低，一旦断电，恢复元数据需要的时间过长
+    引入一个新的节点SecondaryNamenode专门用于合并 Edits 和FsImage
+![](imgs/NameNode工作机制.png)
+    1）Fsimage - 在data/tmp/dfs/name/current 目录下查看
+        hdfs oiv -p XML -i fsimage_xxxx -o fsimage.xml # 转为XML文件
+    2）Edits - 在data/tmp/dfs/name/current 目录下查看
+        hdfs oev -p XML -i edits_xxxxxx -o edits.xml # 转为XML文件
+    NameNode被格式化后，会在data/tmp/dfs/name/current目录中产生如下文件
+    fsimage_00000
+    fsimage_00000.md5
+    see_txid
+    VERSION
+    Fsimage文件：HDFS文件系统元数据的一个永久的检查点，其中包含HDFS文件系统的所有目录和文件idnode的序列化信息
+    Edits文件：存放HDFS文件系统的所有更新操作的路径，文件系统客户端执行的所有写操作首先会被记录在Edits文件中
+    seen_txid文件保存是一个数字，就是最后一个Edits的数字
+    每次NameNode启动的时候都会装Fsimage文件读入到内存，加载Edits里面的更新操作，保证内存中的元数据是最新的，同步的
+
+    ！！ Fsimage中没有记录块所对应的DataNode
+    在集群启动后，要求DataNode上报数据块信息，并间隔一段时间后再次上报。
+    3）CheckPoint时间设置
+     hdfs-default.xml 通常情况下，SecondaryNameNode每隔1小时执行一次
+     1 分钟检查一下操作次数，当操作次数达到100W时，SecondaryNameNode执行一次（可以配制）
+
+6. NameNode故障恢复
+    方法一：将SecondaryNameNode中的数据拷贝到NameNode存储数据的目录
+    1. kill -9 NameNode进程
+    2. 删除NameNode存储的数据(data/tmp/dfs/name)
+    3. 拷贝SecondaryNameNode中数据到原NameNode存储目录
+    4. 生启NameNode （单独启动NameNode）
+   
+    方法二、 使用-importCheckpoint 选项启动NameNode守护进程，从而将SecondaryNameNode中数据拷贝到NameNode目录中
+    1. 修改hdfs-site.xml 中的 dfs.namenode.checkpoint.period 
+    2. kill -9  NameNode进程
+    3. 删除NameNode存储的数据(data/tmp/dfs/name)
+    4. 如果SecondaryNameNode不和NameNode在一个主机节点上，需要将SecondaryNameNode存储数据的目录拷贝到NameNode存储数据的平级目录，并删除in_use.lock文件
+    5. 导入检查点数据（等一会儿ctrl + c 结束掉）
+    6. 启动NameNode
+    
+
+
+
+
+
+
+
+
+
+
 
 
 
