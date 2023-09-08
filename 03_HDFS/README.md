@@ -206,6 +206,24 @@ Tips:
 4. 集群运行中可以安全加入和退出一些机器
 ![](imgs/DataNode工作机制.png)
 
+## 数据的完整性
+### DataNode节点保证数据完整性的方法：
+1. 当DataNode读取Block的时候，它会计算CheckSum
+2. 如果计算扣的CheckSum，与Block创建时值不一样，说明Block已经损坏
+3. Client读取其他DataNode上的Block
+4. DataNode在其文件创建后周期验证CheckSum
+
+### DataNode掉线时限参数设置
+1. DataNode 进程死亡或者网络故障造成DataNode无法与NameNode通信
+2. NameNode不会立即把该节点判定为死亡，要经过一段时间，这段时间暂称作超时时长
+3. HDFS默认的超时时长为10分钟+30秒
+4. 如果定义超时时间为TimeOut，则超时时长的计算公式为
+    TimeOut = 2* dfs.namenode.heartbeat.recheck -interval +10 * dfs.heartbeat.interval
+
+
+
+
+
 
 
 
