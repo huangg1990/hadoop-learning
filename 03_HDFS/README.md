@@ -186,6 +186,35 @@ Tips:
     如果满足最小副本条件，NameNode会在30秒钟这后就退出安全模式。在整个系统中99%的块满足最小副本值（默认1）
     在启动一个刚刚格式化的HDFS集群时，因为系统中还没有任何块，所以NameNode不会进入安全模式
 
+4. 基本语法
+    集群处理安全模式，不能执行重要操作（写操作）。集群启动完成后，自动退出安全模式
+    hdfs dfsadmin -safemode get  # 查看安全模式状态
+    hdfs dfsadmin -safemode enter # 进入安全模式
+    hdfs dfsadmin -safemode leave # 离开安全模式
+    hdfs dfsadmin -safemode wait # 等待安全模式状态
+
+# NameNode多目录配制
+1. NameNode的本地目录可以配置成多个，且每个目录存放的内容相同，增加了可靠性
+2. 配置hdfs-site.xml 文件 增加如下
+    dfs.namenode.name.dir下的value值 使用逗号格开 file://${hadop.tmp.dir}/dfs/name1,file://${hadop.tmp.dir}/dfs/name2
+3. 同步配置 删除data,log中所有数据 格式化集群 重启集群
+
+# DataNode工作机制
+1. 一个数据块在DataNode上以文件形式存储在磁盘上，包括2个文件，一个是数据本身，一个是元数据包括数据块的长度，块数据的校验和，以及时间戳
+2. DataNode启动后向NameNode注册，通过后，周期性（1小时）的向NameNode上报所有块信息
+3. 心跳每3秒一次，心跳返回结果带有NameNode给DataNode的命令如复制块数据到另一台机器，或删除某个数据块。如果超过10分钟没有收到某个DataNode的心跳，则认为节点不可用
+4. 集群运行中可以安全加入和退出一些机器
+![](imgs/DataNode工作机制.png)
+
+
+
+
+
+
+
+
+
+
 
 
 
