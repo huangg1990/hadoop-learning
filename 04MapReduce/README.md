@@ -76,6 +76,8 @@ Java的序列化是一个重量级序列化框架(Serializable),一个对象被�
 
 3. 自定义 Bean对象实现序列化接口（Writable）
 序列化与反序列化的顺序必须完全一致 ！！！
+参考案例：flowStat 
+
 
 
 
