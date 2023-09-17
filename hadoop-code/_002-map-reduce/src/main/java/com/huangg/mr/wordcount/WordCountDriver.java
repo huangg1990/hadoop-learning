@@ -10,6 +10,11 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 
+/**
+ * 在集群上运行
+ * hadoop jar wc.jar com.huangg.mr.wordcount.WordCountDriver /user/hadoop/input /user/hadoop/wc_output
+ *
+ */
 public class WordCountDriver {
 
     public static void main(String[] args) throws Exception {

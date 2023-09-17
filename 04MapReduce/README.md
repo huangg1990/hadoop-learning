@@ -56,6 +56,9 @@ Reducer
 Driver
     相当于YARN集群的客户端，用于提交我们的整个程序到YARN集群，提交的是封装了MapReduce程序相关运行参数的job对象
 
+### 在集群上运行 Wordcout 
+将打好的jar包上传到服务器 运行如下
+hadoop jar wc.jar com.huangg.mr.wordcount.WordCountDriver /user/hadoop/input /user/hadoop/wc_output
 
 
 
