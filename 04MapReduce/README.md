@@ -28,6 +28,38 @@ MrAppMaster 负责整个程序的过程调度及状态协调
 MapTask 负责Map阶段的整个数据处理流程
 ReduceTask  负责Reduce阶段整个数据处理流程
 
+### 常用数据序列化类型
+Java 类型    Hadoop Writable类型
+boolean        BooleanWritable
+byte            ByteWritable
+int             IntWritable
+float           FloatWritable
+long            LongWritable
+double          DoubleWritable
+String          Text
+map             MapWritable
+array           ArrayWritable
+
+
+### MapReduce编程规范
+Mapper 
+    用户自定义 Mapper要继承的父类
+    Mapper的输入数据是KV对的形式（KV的类型可自定义）
+    Mapper中的业务逻辑写在map()方法中
+    Mapper的输出数据是KV对的形式（KV的类型可自定义）
+    map()方法（MapTask）对每个<K,V>调用一次
+Reducer 
+    用户自定义 的Reduce要继承自己的父类
+    Reducer的输入数据类型对应Mapper的输出数据类型，也是KV 
+    Reducer的业务逻辑写在reduce()方法中
+    ReduceTask进程对每个相同的k的<k,v> 组调用一次reduce()方法
+Driver
+    相当于YARN集群的客户端，用于提交我们的整个程序到YARN集群，提交的是封装了MapReduce程序相关运行参数的job对象
+
+
+
+
+
 
 
 
