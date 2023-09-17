@@ -60,6 +60,28 @@ Driver
 将打好的jar包上传到服务器 运行如下
 hadoop jar wc.jar com.huangg.mr.wordcount.WordCountDriver /user/hadoop/input /user/hadoop/wc_output
 
+## Hadoop序列化
+序列化 就是把内存中的对象，转换成字节序列（或其他数据传输协议）以便于存储到磁盘持久化 或 网络传输
+反序列化 就是将收到的字节序列（或其他数据传输协议）或是磁盘的持久化化数据，转换成内存中的对象。
+
+1. 为什么不使用Java的序列化？
+Java的序列化是一个重量级序列化框架(Serializable),一个对象被序列化后，会附带很多额外的信息（各种校验信息，Header，继承体系等），不便于在网络中高效
+传输，所以，Hadoop自己开发了一套序列化机制（Writable）
+
+2. Hadoop序列化特点
+紧凑： 高效使用存储空间
+快速： 读写数据的额外开销小
+可扩展： 随着通信协议的升级而可升级
+互操作： 支持多语言的交互
+
+3. 自定义 Bean对象实现序列化接口（Writable）
+序列化与反序列化的顺序必须完全一致 ！！！
+
+
+
+
+
+
 
 
 
