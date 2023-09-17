@@ -7,10 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="_001-hdfs-client" />
+        <module name="_002-map-reduce" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="_001-hdfs-client" target="1.8" />
+      <module name="_002-map-reduce" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

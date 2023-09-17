@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/hadoop-code/_001-hdfs-client/_001-hdfs-client.iml" filepath="$PROJECT_DIR$/hadoop-code/_001-hdfs-client/_001-hdfs-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hadoop-code/_002-map-reduce/_002-map-reduce.iml" filepath="$PROJECT_DIR$/hadoop-code/_002-map-reduce/_002-map-reduce.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/hadoop-learning.iml" filepath="$PROJECT_DIR$/.idea/hadoop-learning.iml" />
     </modules>
   </component>
