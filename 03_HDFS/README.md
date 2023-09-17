@@ -220,6 +220,120 @@ Tips:
 4. 如果定义超时时间为TimeOut，则超时时长的计算公式为
     TimeOut = 2* dfs.namenode.heartbeat.recheck -interval +10 * dfs.heartbeat.interval
 
+### 服役新数据节点(添加节点)
+环境准备
+1. 在hadoop主机上再克隆一台Hadoop224
+2. 修改IP地址和主机名称
+3. mbmw原来HDFS文件系统保留的文件（opt/module/hadoopxxxx/data 和log）文件 [一定要删除不然来回切换]
+4. source一下配置文件 source /etc/profile
+5. 直接启动DataNode 即可关联到集群
+    sbin/hadoop-daemon.sh start datanode
+6. 启动NodeManager
+   sbin/hadoop-daemon.sh start nodemanager
+
+### 添加白名单（节点白名单）
+添加到白名单的主机节点，才允许访问NameNode，不在白名单的主机节点，都会被退出。
+1. 配置白名单 在etc/hadoop目录下创建dfs.hosts文件 添加主机名称
+    hadoop221 
+    hadoop222
+    hadoop223
+2. 在NameNode的hdfs-site.xml配置文件中增加dfs.hosts属性
+   <property>
+        <name>dfs.hosts</name>
+        <value>etc/hadoop/dfs.hosts</value>
+   </property>
+3. 配置文件分发
+    xsync hdfs-site.xml
+4. 刷新NameNode 
+    hdfs dfsadmin -refreshNodes 
+5. 更新ResourceManager节点 
+    yarn rmadmin -refreshNodes 
+6. 在Web上查看
+
+### 黑名单退役（节点黑名单）
+在黑名单上的都会被强制退出
+1. 在NameNode的 etc/hadoop目录下创建dfs.hosts.exclude文件
+    touch dfs.hosts.exclude
+    hadoop224
+2. 在NameNode的hdfs-site.xml配置文件中增加dfs.hosts.exclude属性
+   <property>
+      <name>dfs.hosts.exclude</name>
+      <value>etc/hadoop/dfs.hosts.exclude</value>
+   </property>
+3. 配置文件分发
+     xsync hdfs-site.xml
+4. 刷新NameNode
+   hdfs dfsadmin -refreshNodes
+5. 更新ResourceManager节点
+   yarn rmadmin -refreshNodes
+6. 在Web上查看
+
+
+### Datanode多目录配置
+Datanode也可以配置成为多个目录，每个目录存储的数据不一样。即：数据不是副本
+1. 具体配置如下
+   <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>file:///${hadoop.tmp.dir}/dfs/data1,file:///${hadoop.tmp.dir}/dfs/data2</value>
+   </property>
+
+## HDFS 2.X 新特性
+### 集群间数据拷贝
+采用distcp 命令实现两个Hadoop集群之间的递归数据复制
+bin/hadoop distcp hdfs://hadoop102:9000/user/huangg/hello.txt hdfs://hadoop200:9000/user/huangg/hello.txt 
+
+### 小文件存档
+1. 小文件存储的弊端
+    每个文件均按块存储，每个块的元数据存储在Namenode的内存中，因此HDFS存储小块会非常低效，大量的小文件块会耗尽NameNode中的大部分内存，但注意，存储小文件所需要的
+磁盘容量和数据块的大小无关。
+2. 解决存储小文件的办法之一
+    HDFS存档文件或HAR文件，是一个更高效的文件存档工具，它将文件存入HDFS块，在减少NameNode内存使用的同时，允许对文件进行透明访问。具体来说，HDFS存档文件对内部还是一个个
+独立文件，对NameNode来说却是一个整体，减少NameNode内存
+3. 归档文件
+    bin/hadoop archive -archiveName input.har -p /user/hadoop/input
+4. 查看归档
+    hadoop fs -lsr /user/hadoop/input.har
+5. 解归档文件
+    hdfoop fs -cp har:///user/hadoop/output/input.har/* /user/hadoop
+
+### 回收站
+1. 开启回收站
+    默认值fs.trash.interval=0, 0 表示禁用回收站； 其他值表示设置文件的存活时间
+    默认值fs.trash.checkpoint.interval=0 检查回收站的时间间隔，0 与 fs.trash.interval参数相等
+2. 要求 fs.trash.checkpoint.interval <= fs.trash.interval
+3. 修改配置 core-site.xml 配置垃圾回收时间为1 分钟
+    <property>
+        <name>fs.trash.interval</name>
+        <value>1</value>
+    </property>
+4. 查看地回收站
+   /user/hadoop/.Trash/..
+5. 修改访问垃圾回收站用户名称
+    进入垃圾回收站用户名称，默认是dr.who, 修改为hadoop用户 core-site.xml
+   <property>
+      <name>hadoop.http.staticuser.user</name>
+      <value>hadoop</value>
+   </property>
+6. 通过程序删除的文件不会经过回收站，需要调用MoveToTrash（） 才进入回收站
+    Trash trash = new Trash(conf)
+
+## 快照管理
+快照相当于对目录做一个备份，并不会立即复利所有文件，而是指向同一个文件。当写入发生时，会会产生新文件。
+hdfs.dfsadmin -allowSnapshot 路径  开启指定目录的快照功能
+hdfs dfsadmin -disallowSnapshot 路径 禁用指定目录的快照功能
+hdfs dfs -createSnapshot 路径 对目录创建快照
+hdfs dfs -renameSnapshot 路径 旧名称 新名称 重命名快照
+hdfs dfs lsSnapshottableDir 列出当前用户所有可快照目录
+hdfs snapshotDiff 路径1 路径2 比较2个快照目录下的不同之处
+hdfs dfs -deleteSnapshot <path> <snapshotName> 删除快照
+
+
+    
+    
+
+
+
+
 
 
 
