@@ -38,6 +38,9 @@ public class FlowDriver {
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
+        // 结果写成几个文件 有几个Reduce
+        job.setNumReduceTasks(2);
+
         // 提交Job
         boolean result = job.waitForCompletion(true);
         System.exit(result ? 0 : 1);
