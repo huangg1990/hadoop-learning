@@ -108,6 +108,54 @@ MapTask并行度决定机制
    7) inputSplit只记录了切片的元数据信息，比如起始位置，长度及所在的节点列表等
 4. 提交切片规划文件到YARN上，YARN上的MrAppMaster就可以根据切片规划文件计算开启MapTask个数
 
+### FileInputFormat切片机制
+1. 简单的按照文件的内容长度进行切分
+2. 切片大小，默认等于block大小
+3. 切片时不考虑数据集整体，而是逐个针对每个文件单独切片
+
+### FileInputFormat切片设置
+maxsize 切片最大值：参数如果调得比blockSize小，则会让切片变小，而且就等于配置这个参数的值
+minsize 切片最小值： 参数调的比BlockSize大，则可以让切片变得比BlockSize还大
+
+获取切片信息
+String name = inputSplit.getPath().getName()
+根据文件类型获取切片信息
+FileSplit inputSplit=(FileSplit) context.getInputSplit()
+
+### combineTextInputFormat切片机制
+框架默认的TextInputFormat切片机制是对任务按文件规划切片，不管文件多少，都会是一个单独的切片，都会交给一个MapTask，这样如果有大量小文件，就会
+产生大量的MapTask，处理效率极其低下。
+
+1. 应用场景： 
+   CombineTextFormat用于小文件过多的场景，它可以将多个小文件从逻辑上规划到一个切片中，这样，多个小文件就可以交给一个MapTask处理
+2. 虚拟存储切片最大值设置：
+    CombineTextInputFormat.setMaxInputSplictSize(job,4194304); //4MB
+    注意：虚拟存储切片最大值设置最好根据实际情况来设置具体的值。（看小文大小设置）
+3. 切片机制-生成切片过程包括-虚拟存储过程和切片过程二部分
+![](imgs/004combineTextInputFormat切片机制.png)
+
+
+4. 案例
+//2023-09-19 21:30:26,540   INFO  [org.apache.hadoop.mapreduce.JobSubmitter]    -   number of splits:4
+// 默认一个文件一个分片
+if(args==null || args.length==0){
+   args = new String[]{
+   "/Users/huanggang/gitroot/data/hadoop-learning/data/wc_input",
+   "/Users/huanggang/Downloads/wc_output",
+};
+
+/**
+* 2023-09-19 21:33:45,609   INFO  [org.apache.hadoop.mapreduce.JobSubmitter]    -   number of splits:1
+* 设置后就只有一个分片了
+* 小文件 并合并了（分片时 使用虚拟存储切片）
+*/
+// 设置分片
+job.setInputFormatClass(CombineTextInputFormat.class);
+// 虚拟存储切片最大值设置为4MB
+CombineTextInputFormat.setMaxInputSplitSize(job,4194304);
+
+
+
 
 
 
