@@ -154,6 +154,29 @@ job.setInputFormatClass(CombineTextInputFormat.class);
 // 虚拟存储切片最大值设置为4MB
 CombineTextInputFormat.setMaxInputSplitSize(job,4194304);
 
+### FileInputFormat实现类
+在运行MapReduce程序时，输入的文件格式包括，基于行的日志文件、二进制格式文件、数据库表等 
+FileInputFormat常见的接口实现类包括如下：
+TextInputFormat 
+KeyValueTextInputFormat
+NLineInputFormat
+CombineTextInputFormat 
+和自定义InputFormat 等
+
+
+### TextInputFormat
+TextInputFormat是默认的FileInputFormat实现类。按行读取每条记录。
+键是存储该行在整个文件中的起始字节偏移量，LongWritable类型，
+值是这行的内容，不包括任何行终止符（换行符和回车符）Text类型
+
+
+
+
+
+
+
+
+
 
 
 

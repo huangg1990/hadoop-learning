@@ -22,6 +22,10 @@ public class WordCountMapper extends Mapper<LongWritable, Text, Text, IntWritabl
     @Override
     protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, Text, IntWritable>.Context context)
             throws IOException, InterruptedException {
+
+        // 个文件中的起始字节偏移量
+        System.out.println(key.toString());
+
         // 1 获取一行数据
         String line = value.toString();
         // 2 切分单词
