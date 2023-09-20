@@ -170,6 +170,20 @@ TextInputFormat是默认的FileInputFormat实现类。按行读取每条记录�
 值是这行的内容，不包括任何行终止符（换行符和回车符）Text类型
 
 
+### KeyValueTextInputFormat 
+每一行均为一条记录，被分隔符分割为Key，Value。可以通过在驱动类中设置
+conf.set(KeyValueLineRecordReader.KEY_VALUE_SEPERATOR,"\t") 来设定分隔符。
+默认分隔符是tab（\t）
+line1   Rich learning form 
+
+分被分隔为
+（line1,Rich learning form）
+此时的键是每行排在制表符之前的Text序列
+![](imgs/数据切片与MapTask并行度决定机制.png)
+
+
+
+
 
 
 
