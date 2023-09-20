@@ -180,7 +180,17 @@ line1   Rich learning form
 （line1,Rich learning form）
 此时的键是每行排在制表符之前的Text序列
 ![](imgs/数据切片与MapTask并行度决定机制.png)
+案例代码请看kv
 
+### NLineInputFormat
+NLineInputFormat代表每个map进程处理的InputSplit不再按Block块去划分，而是按NlineInputFormat
+指定的行数N来划分。即输入文件的总行数/N = 切片数，如果不整除，切片数= 商+1
+
+![](imgs/NLineInputFormat说明.png)
+
+以WordCont为例 设置Driver即可 -- 每3行一个切片
+NLineInputFormat.setNumLinesPerSplit(job,3)
+案例代码请看nline
 
 
 
