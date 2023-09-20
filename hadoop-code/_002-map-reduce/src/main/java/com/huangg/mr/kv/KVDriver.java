@@ -36,7 +36,7 @@ public class KVDriver {
 
         // 1 获取Job对象
         Job job = Job.getInstance(conf);
-
+        // 设置输入格式
         job.setInputFormatClass(KeyValueTextInputFormat.class);
 
         // 2 设置Jar存储位置
