@@ -188,10 +188,20 @@ NLineInputFormat代表每个map进程处理的InputSplit不再按Block块去划�
 
 ![](imgs/NLineInputFormat说明.png)
 
-以WordCont为例 设置Driver即可 -- 每3行一个切片
+// 使用NLineInputFormat处理记录数
+job.setInputFormatClass(NLineInputFormat.class);
+//以WordCont为例 设置Driver即可 -- 每3行一个切片
 NLineInputFormat.setNumLinesPerSplit(job,3)
-案例代码请看nline
+案例代码请看 NLine
 
+### 自定义InputFormat
+Hadoop自带的InputFormat类型不能满足所有应用场景，需要自定义InputFormat来解决实际问题
+1. 自定义一个类继承FileInputFormat
+2. 改写RecordReader 实现读取一个完整的文件封装为KV
+3. 在输出时使用SequenceFileOutPutFormat输出合并文件
+
+案例代码请看 inputFormat
+ 
 
 
 
