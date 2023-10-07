@@ -201,7 +201,51 @@ Hadoop自带的InputFormat类型不能满足所有应用场景，需要自定义
 3. 在输出时使用SequenceFileOutPutFormat输出合并文件
 
 案例代码请看 inputFormat
- 
+自定义InputFormat实现合并小文件
+
+
+## MapReduce工作流程
+MapReduce详细工作流程（一）Map阶段
+![](imgs/006MapReduce详细工作流程（一）.png)
+
+MapReduce详细工作流程（二）Reduce阶段
+![](imgs/007MapReduce详细工作流程（二）.png)
+
+
+## Shuffle 机制
+Map 方法之后，Reduce方法之前的数据处理过程称为Shuffle，如下图
+
+
+## Partition 分区
+1. 要求将统计结果按照条件输出到不同的文件中（分区）。
+2. 默认Partition分区
+   (key.hashCode() & Integer.MAX_VALUE) % numReduceTasks
+    默认分区是根据Key的hashCode对ReduceTasks个数取模得到的。用户没法控制啊个key存储到那个分区。
+3. 自定义Partition分区
+    1） 自定义类继承Partitioner，重写getPartition方法
+    2） 在Job驱动中，设置自定义Partitioner  job.setPartitionerClass(MyPartitioner.class)
+    3) 自定义Partition后，要根据自定义Partitioner的逻辑设置相应的ReduceTask  job.setNumReduceTasks(x)
+4. 案例     com.huangg.mr.flowStat
+5. 总结
+    1） 如果ReduceTask的数量> getPartition的结果数，则会多产生几个空的输出文件part-r-000xx;
+    2) 如果1<ReuceTask的数据<getPartition的结果数，则有一部分分区数据无处安放 会Exception
+    3） 如果ReduceTask的数量=1，则不管MapTask端输出多少个分区文件，最终结果都交给这一个ReduceTask，最终只会产生一个结果文件part-r-0000
+    4） 分区呈必须从0开始，逐1累加
+    5） 如自定义分区数为5 则
+       设置1个分区 会正常运行，只不过会产生一个输出文件
+       设置2个分区，会报错
+       设置6个分区，程序正常运行，会产生空文件
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -12,7 +12,7 @@ public class FlowDriver {
     public static void main(String[] args) throws Exception {
 
         args = new String[]{
-                "/Users/huanggang/gitroot/data/hadoop-learning/data/FLOW.log",
+                "/Users/huanggang/gitroot/data/hadoop-learning/data/phoneData.log",
                 "/Users/huanggang/Downloads/flow_out"
         };
 
@@ -38,8 +38,13 @@ public class FlowDriver {
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
+        // 设置自定义分区
+        job.setPartitionerClass(ProvincePartitioner.class);
+
         // 结果写成几个文件 有几个Reduce
-        job.setNumReduceTasks(2);
+//        job.setNumReduceTasks(2);
+        job.setNumReduceTasks(5);   // 设置自定义分区 必须要一样
+
 
         // 提交Job
         boolean result = job.waitForCompletion(true);
